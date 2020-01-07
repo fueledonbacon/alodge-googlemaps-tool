@@ -1,9 +1,9 @@
 function initMap() {
 
 	var broadway = {
-		info: '<strong>Chipotle on Broadway</strong><br>\
-					5224 N Broadway St<br> Chicago, IL 60640<br>\
-					<a href="https://goo.gl/maps/jKNEDz4SyyH2">Get Directions</a>',
+		info: `<strong>Chipotle on Broadway</strong><br>
+					5224 N Broadway St<br> Chicago, IL 60640<br>
+					<a href="https://goo.gl/maps/jKNEDz4SyyH2">Get Directions</a>`,
 		lat: 41.976816,
 		long: -87.659916
 	};
@@ -33,7 +33,7 @@ function initMap() {
 	var map = new google.maps.Map(document.getElementById('map'), {
 		zoom: 13,
 		center: new google.maps.LatLng(41.976816, -87.659916),
-		mapTypeId: google.maps.MapTypeId.ROADMAP
+		mapTypeId: google.maps.MapTypeId.SATELLITE
 	});
 
 	var infowindow = new google.maps.InfoWindow({});
