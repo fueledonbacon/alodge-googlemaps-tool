@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Google Maps APIs</title>
+	<title>Multi Location Google Maps Demo</title>
   <link href="style.css" rel="stylesheet">
 </head>
 
@@ -16,43 +16,41 @@
   <script src="script.js"></script>
   <script>
     function initializeMap(){
+
+      const boulderCoord = new LatLng(40.029420,-105.3100177)
+      const gMapsBoulderCoord = new google.maps.LatLng(boulderCoord.lat,boulderCoord.long)
       const map = new GMap({
         id: 'map',
         descriptionBlockId: 'location-description',
-        lat: 41.976816,
-        long: -87.659916
+        lat: boulderCoord.lat,
+        long: boulderCoord.long,
+        zoom: 14
       })
 
-      const locations = MapLocation.initMany([
-        {
-          name: 'Chipotle on Broadway',
-          address: '5224 N Broadway St<br> Chicago, IL 60640',
-          lat: 41.976816,
-          long: -87.659916,
-          description: `This is a location where things happen`
-        },
-        {
-          name: 'Chipotle on Belmont',
-          address: '1025 W Belmont Ave<br> Chicago, IL 60657',
-          lat: 41.939670,
-          long: -87.655167,
-          description: `This is a location where things also happen`
-        },
-        {
-          name: 'Chipotle on Sheridan',
-          address: '6600 N Sheridan Rd<br> Chicago, IL 60626',
-          lat: 42.002707,
-          long: -87.661236,
-          description: `This is a location where things used to happen`
+      var request = {
+        location: gMapsBoulderCoord,
+        radius: '1000',
+        type: ['mountain bike trail']
+      };
+
+      service = new google.maps.places.PlacesService(map.instance);
+      service.nearbySearch(request, callback);
+  
+      function callback(results, status) {
+
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+          
+          const locationInputs = Adapters.GPlacesToMapLocationInputs(results.slice(0, 10))
+          const locations = MapLocation.createMany(locationInputs)
+          map.addMarkers(locations)
         }
-      ])
-    
-      map.addMarkers(locations)
+      }
     }
 
   </script>
 	<script async defer 
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5J8-2Cf1HQ9Rvt1TK3OtYQG9AlxPAJmU&callback=initializeMap"></script>
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5J8-2Cf1HQ9Rvt1TK3OtYQG9AlxPAJmU&libraries=places&callback=initializeMap"></script>
+    
 </body>
 
 </html>

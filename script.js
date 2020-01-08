@@ -1,3 +1,16 @@
+class Adapters{
+  static GPlacesToMapLocationInputs(places){
+    return places.map(place => {
+      return {
+        name: place.name,
+        address: place.vicinity,
+        lat: place.geometry.location.lat(),
+        long: place.geometry.location.lng()
+      }
+    })
+  }
+}
+
 class LatLng{
 
   constructor(lat, long){
@@ -12,7 +25,7 @@ class LatLng{
 
 class MapLocation{
 
-  static initMany(inputArr) {
+  static createMany(inputArr) {
 
     return inputArr.map((input) => new MapLocation(input))
   }
