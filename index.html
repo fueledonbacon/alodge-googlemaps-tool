@@ -18,7 +18,6 @@
     function initializeMap(){
 
       const boulderCoord = new LatLng(40.029420,-105.3100177)
-      const gMapsBoulderCoord = new google.maps.LatLng(boulderCoord.lat,boulderCoord.long)
       const map = new GMap({
         id: 'map',
         descriptionBlockId: 'location-description',
@@ -27,8 +26,9 @@
         zoom: 14
       })
 
+      // demo search of a set of 10 mountain bike trails in boulder
       var request = {
-        location: gMapsBoulderCoord,
+        location: new google.maps.LatLng(boulderCoord.lat,boulderCoord.long),
         radius: '1000',
         type: ['mountain bike trail']
       };
