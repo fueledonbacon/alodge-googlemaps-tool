@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Google Maps APIs</title>
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+  <h1>Multi Location Map Demo</h1>
+  <div id="map"></div>
+  <div id="location-description"></div>
+
+  <script src="script.js"></script>
+  <script>
+    function initializeMap(){
+      const map = new GMap({
+        id: 'map',
+        descriptionBlockId: 'location-description',
+        lat: 41.976816,
+        long: -87.659916
+      })
+
+      const locations = MapLocation.initMany([
+        {
+          name: 'Chipotle on Broadway',
+          address: '5224 N Broadway St<br> Chicago, IL 60640',
+          lat: 41.976816,
+          long: -87.659916,
+          description: `This is a location where things happen`
+        },
+        {
+          name: 'Chipotle on Belmont',
+          address: '1025 W Belmont Ave<br> Chicago, IL 60657',
+          lat: 41.939670,
+          long: -87.655167,
+          description: `This is a location where things also happen`
+        },
+        {
+          name: 'Chipotle on Sheridan',
+          address: '6600 N Sheridan Rd<br> Chicago, IL 60626',
+          lat: 42.002707,
+          long: -87.661236,
+          description: `This is a location where things used to happen`
+        }
+      ])
+    
+      map.addMarkers(locations)
+    }
+
+  </script>
+	<script async defer 
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5J8-2Cf1HQ9Rvt1TK3OtYQG9AlxPAJmU&callback=initializeMap"></script>
+</body>
+
+</html>
