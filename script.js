@@ -3,20 +3,20 @@
 
 class GMapsLink{
 
-  constructor(location){
+  constructor(coord){
 
-    if(!(location instanceof GPSLocation))
-      throw new Error('Location object not of type GPSLocation')
-    this.location = location
+    if(!(coord instanceof LatLng))
+      throw new Error('Location object not of type LatLng')
+    this.coordinate = coord
   }
 
   get href(){
 
-    return `https://www.google.com/maps/search/?api=1&query=${this.location.lat},${this.location.long}`
+    return `https://www.google.com/maps/search/?api=1&query=${this.coordinate.lat},${this.coordinate.long}`
   }
 }
 
-class GPSLocation{
+class LatLng{
 
   constructor(lat, long){
 
@@ -29,25 +29,18 @@ class GPSLocation{
 }
 
 class MapLocation{
-  constructor(map, { name, address, location, description = '', icon = '' }){
 
-    if (!(map instanceof GMap)){
-      throw new Error('Need a Google map instance to continue.')
-    }
+  static initMany(inputArr) {
+    return inputArr.map((input) => new MapLocation(input))
+  }
+
+  constructor({ name, address, coordinate, description = '', icon = '' }){
     this.icon = icon
-    this.map = map
     this.name = name
     this.address = address
-    this.location = location
+    this.coordinate = coordinate
     this.description = description
-    this.link = new GMapsLink(this.location)
-
-    this.marker =  new google.maps.Marker({
-			position: new google.maps.LatLng(this.location.lat, this.location.long),
-			map: this.map.instance
-    });
-    
-    this.map.addInfoWindowListener(this)
+    this.link = new GMapsLink(this.coordinate)
   }
 
   get infoHTML(){
@@ -61,51 +54,65 @@ class MapLocation{
 class GMap{
 
   static example(){
-    const map = new GMap('map', new GPSLocation(41.976816, -87.659916))
+    const map = new GMap('map', new LatLng(41.976816, -87.659916))
+
+    const locations = MapLocation.initMany([
+      {
+        name: 'Chipotle on Broadway',
+        address: '5224 N Broadway St<br> Chicago, IL 60640',
+        coordinate: new LatLng(41.976816, -87.659916)
+      },
+      {
+        name: 'Chipotle on Belmont',
+        address: '1025 W Belmont Ave<br> Chicago, IL 60657',
+        coordinate: new LatLng(41.939670, -87.655167)
+      },
+      {
+        name: 'Chipotle on Sheridan',
+        address: '6600 N Sheridan Rd<br> Chicago, IL 60626',
+        coordinate: new LatLng(42.002707, -87.661236)
+      }
+    ])
   
-    map.addMarker({
-      name: 'Chipotle on Broadway',
-      address: '5224 N Broadway St<br> Chicago, IL 60640',
-      location: new GPSLocation(41.976816, -87.659916)
-    })
-    
-    
-    map.addMarker({
-      name: 'Chipotle on Belmont',
-      address: '1025 W Belmont Ave<br> Chicago, IL 60657',
-      location: new GPSLocation(41.939670, -87.655167)
-    })
-    
-    map.addMarker({
-      name: 'Chipotle on Sheridan',
-      address: '6600 N Sheridan Rd<br> Chicago, IL 60626',
-      location: new GPSLocation(42.002707, -87.661236)
-    })
+    map.addMarkers(locations)
   }
 
-  constructor( domId, centerLocation, mapType = 'ROADMAP', zoom = 13){
+  constructor( domId, center, mapType = 'ROADMAP', zoom = 13){
 
     this.instance = new google.maps.Map(document.getElementById(domId), {
       zoom,
-      center: new google.maps.LatLng(centerLocation.lat, centerLocation.long),
+      center: new google.maps.LatLng(center.lat, center.long),
       mapTypeId: google.maps.MapTypeId[mapType]
-    });
-    this.infoWindow = new google.maps.InfoWindow({});
-    this.markers = []
+    })
+
+    this.infoWindow = new google.maps.InfoWindow({})
+    
   }
 
-  addMarker(inputs){
-    this.markers.push(new MapLocation(this, inputs))
+  addMarkers(locations){
+    locations.map((location) => {
+      this.addMarker(location)
+    })
   }
 
-  addInfoWindowListener(mapLocation){
-    google.maps.event.addListener(mapLocation.marker, 'click', () => {
-      this.infoWindow.setContent(mapLocation.infoHTML);
-      this.infoWindow.open(this.instance, mapLocation.marker);
+  addMarker(location){
+
+    const marker = new google.maps.Marker({
+			position: new google.maps.LatLng(location.coordinate.lat, location.coordinate.long),
+			map: this.instance
+    })
+
+    this.addInfoWindowListener(location, marker)
+  }
+
+  addInfoWindowListener(location, marker){
+    google.maps.event.addListener(marker, 'click', () => {
+      this.infoWindow.setContent(location.infoHTML);
+      this.infoWindow.open(this.instance, marker);
     });
   }
 }
 
-function initMap(){
+function initMap() {
   GMap.example()
 }
