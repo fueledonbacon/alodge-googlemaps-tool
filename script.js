@@ -1,21 +1,3 @@
-
-
-
-class GMapsLink{
-
-  constructor(coord){
-
-    if(!(coord instanceof LatLng))
-      throw new Error('Location object not of type LatLng')
-    this.coordinate = coord
-  }
-
-  get href(){
-
-    return `https://www.google.com/maps/search/?api=1&query=${this.coordinate.lat},${this.coordinate.long}`
-  }
-}
-
 class LatLng{
 
   constructor(lat, long){
@@ -31,10 +13,12 @@ class LatLng{
 class MapLocation{
 
   static initMany(inputArr) {
+
     return inputArr.map((input) => new MapLocation(input))
   }
 
   constructor({ name, address, lat, long, description = '', icon = '' }){
+
     this.icon = icon
     this.name = name
     this.address = address
@@ -51,9 +35,26 @@ class MapLocation{
     <a href="${this.link.href}">Get Directions</a>`
   }  
 }
+
+class GMapsLink{
+
+  constructor(coord){
+
+    if(!(coord instanceof LatLng))
+      throw new Error('Location object not of type LatLng')
+    this.coordinate = coord
+  }
+
+  get href(){
+
+    return `https://www.google.com/maps/search/?api=1&query=${this.coordinate.lat},${this.coordinate.long}`
+  }
+}
+
 class GMap{
 
   static example(){
+
     const map = new GMap({
       id: 'map',
       lat: 41.976816,
@@ -97,7 +98,9 @@ class GMap{
   }
 
   addMarkers(locations){
+
     locations.map((location) => {
+
       this.addMarker(location)
     })
   }
@@ -113,6 +116,7 @@ class GMap{
   }
 
   addInfoWindowListener(location, marker){
+    
     google.maps.event.addListener(marker, 'click', () => {
       this.infoWindow.setContent(location.infoHTML);
       this.infoWindow.open(this.instance, marker);
